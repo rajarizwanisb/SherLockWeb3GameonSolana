@@ -28,6 +28,9 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Set build script permissions # NEW STEP: This will fix the permission error
+        run: chmod +x ./node_modules/.bin/vite
+
       - name: Build project
         run: npm run build
 
