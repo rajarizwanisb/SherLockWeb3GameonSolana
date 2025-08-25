@@ -1,17 +1,10 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import path from 'path';
 
+// https://vitejs.dev/config/
 export default defineConfig({
   plugins: [react()],
-  build: {
-    // This is the key fix that ensures assets are loaded correctly on GitHub Pages
-    // It tells Vite to use the full path to your repository
-    publicPath: '/SherLockWeb3GameonSolana/',
-  },
-  resolve: {
-    alias: {
-      src: path.resolve(__dirname, './src'),
-    },
-  },
+  // This is the key fix that ensures assets are loaded correctly on GitHub Pages
+  // It tells Vite to use a relative path for all your assets, which works with the subdirectory
+  base: './',
 });
