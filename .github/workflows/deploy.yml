@@ -1,43 +1,32 @@
+# Workflow for deploying a Vite React app to GitHub Pages
 name: Deploy Vite React app to GitHub Pages
 
 on:
   push:
-    branches: [ main ]
-  workflow_dispatch:
-
-permissions:
-  contents: read
-  pages: write
-  id-token: write
-
-concurrency:
-  group: "pages"
-  cancel-in-progress: true
+    branches:
+      - main  # Trigger this workflow whenever a commit is pushed to the 'main' branch
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+  build-and-deploy:
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment to run the job
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v2  # Checkout the code from your repository
 
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          node-version: 20
-          cache: npm
+          node-version: '18' # Use Node.js version 18, which is compatible with most modern tools
 
-      - run: npm ci
-      - run: npm run build
+      - name: Install dependencies
+        run: npm install  # Install all project dependencies from package.json
 
-      # Fix for SPA routing (creates 404.html as a copy of index.html)
-      - run: cp dist/index.html dist/404.html
+      - name: Build project
+        run: npm run build # Run the build command to create the static 'dist' folder
 
-      - uses: actions/upload-pages-artifact@v3
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3 # Use the peaceiris action for deployment
         with:
-          path: dist
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    steps:
-      - id: deployment
-        uses: actions/deploy-pages@v4
+          github_token: ${{ secrets.GITHUB_TOKEN }} # Use the default token provided by GitHub Actions
+          publish_dir: ./dist # Specify the directory to publish (the 'dist' folder created by the build command)
+          publish_branch: gh-pages # This creates and pushes the content to a 'gh-pages' branch
