@@ -1,34 +1,38 @@
 # Workflow for deploying a Vite React app to GitHub Pages
-name: Deploy Vite React app to GitHub Pages
+name: Deploy to GitHub Pages
 
 on:
   push:
     branches:
-      - main  # Trigger this workflow whenever a commit is pushed to the 'main' branch
+      - main  # Set the branch that will trigger the deployment
 
 jobs:
   build-and-deploy:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu environment to run the job
+    runs-on: ubuntu-latest  # Use the latest Ubuntu environment
+    
+    # Environment variables for the deployment
+    env:
+      VITE_BASE_URL: /SherLockWeb3GameonSolana/ # Set the correct base URL for your project
+
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2  # Checkout the code from your repository
+        uses: actions/checkout@v2
+        with:
+          persist-credentials: false
 
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '18' # Use Node.js version 18, which is compatible with most modern tools
+          node-version: '18'
 
       - name: Install dependencies
-        run: npm install  # Install all project dependencies from package.json
+        run: npm install
 
       - name: Build project
-        run: npm run build # Run the build command to create the static 'dist' folder
-        env:
-          VITE_BASE_URL: /SherLockWeb3GameonSolana/ # Set the correct base path for GitHub Pages
+        run: npm run build
 
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3 # Use the peaceiris action for deployment
+      - name: Deploy
+        uses: JamesIves/github-pages-deploy-action@4.1.5 # This action is very reliable
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }} # Use the default token provided by GitHub Actions
-          publish_dir: ./dist # Specify the directory to publish (the 'dist' folder created by the build command)
-          publish_branch: gh-pages # This creates and pushes the content to a 'gh-pages' branch
+          branch: gh-pages # The branch to deploy to
+          folder: dist # The folder to deploy from
