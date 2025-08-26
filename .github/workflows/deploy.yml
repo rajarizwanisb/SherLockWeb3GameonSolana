@@ -6,12 +6,6 @@ on:
     branches:
       - main  # Set the branch that will trigger the deployment
 
-# Add this permissions block
-permissions:
-  contents: write # This gives the workflow permission to write to your repository
-  pages: write # This gives the workflow permission to create a Pages deployment
-  id-token: write # This is required for authentication
-
 jobs:
   build-and-deploy:
     runs-on: ubuntu-latest  # Use the latest Ubuntu environment
@@ -32,10 +26,7 @@ jobs:
           node-version: '18'
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Set build script permissions # This step will fix the "permission denied" error for vite
-        run: chmod +x ./node_modules/.bin/vite
+        run: npm install  # This will install all packages listed in your package.json
 
       - name: Build project
         run: npm run build
